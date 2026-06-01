@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: "Privacy policy for the BodyLens app.",
 };
 
-const EFFECTIVE_DATE = "June 1, 2025";
+const EFFECTIVE_DATE = "June 1, 2026";
 const CONTACT_EMAIL = "privacy@lenslabs.app";
 
 export default function BodyLensPrivacyPage() {
