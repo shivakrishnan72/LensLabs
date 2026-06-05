@@ -62,7 +62,9 @@ export default function BodyLensPrivacyPage() {
 
             <h3 className="text-base font-medium text-slate-200 mt-5 mb-2">Location data (optional)</h3>
             <ul className="list-disc pl-5 space-y-1 text-sm">
-              <li>If you set up automatic workout detection, the names and coordinates (latitude, longitude, radius) of your workout locations are stored on your device. This data is never uploaded to our servers.</li>
+              <li>If you set up workout location reminders, BodyLens uses <strong>background location monitoring</strong> (iOS &ldquo;Always&rdquo; permission) to detect when you leave a saved workout location such as a gym or court. This triggers a smart recovery reminder notification.</li>
+              <li>The names and coordinates (latitude, longitude, radius) of your saved locations are stored only on your device and are never uploaded to our servers.</li>
+              <li>Location monitoring only occurs while you have saved locations set up. You can remove all locations at any time from Settings → Workout Locations, which also stops background monitoring.</li>
             </ul>
 
             <h3 className="text-base font-medium text-slate-200 mt-5 mb-2">Technical data</h3>
