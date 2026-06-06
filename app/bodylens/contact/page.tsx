@@ -6,7 +6,8 @@ export const metadata: Metadata = {
   description: "Get in touch with the BodyLens team.",
 };
 
-const CONTACT_EMAIL = "privacy@lenslabs.app";
+const CONTACT_EMAIL = "hello@lenslabs.app";
+const PRIVACY_EMAIL = "privacy@lenslabs.app";
 
 export default function BodyLensContactPage() {
   return (
@@ -33,18 +34,20 @@ export default function BodyLensContactPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-white mb-3">Privacy &amp; Data Requests</h2>
+            <h2 className="text-lg font-semibold text-white mb-3">Bug Reports</h2>
             <p className="text-sm">
-              To request access to, export, or deletion of your data, email us at{" "}
+              Found a bug? Email{" "}
               <a href={`mailto:${CONTACT_EMAIL}`} className="text-sky-400 hover:underline">{CONTACT_EMAIL}</a>{" "}
-              with the subject line <strong>&ldquo;Data Request&rdquo;</strong> and the email address associated with your account.
+              with a description of the issue, your device model, and iOS version. Screenshots are always helpful.
             </p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-white mb-3">Bug Reports</h2>
+            <h2 className="text-lg font-semibold text-white mb-3">Privacy &amp; Data Requests</h2>
             <p className="text-sm">
-              Found a bug? Email us with a description of the issue, your device model, and iOS version. Screenshots are always helpful.
+              To request access to, export, or deletion of your data, email{" "}
+              <a href={`mailto:${PRIVACY_EMAIL}`} className="text-sky-400 hover:underline">{PRIVACY_EMAIL}</a>{" "}
+              with the subject line <strong>&ldquo;Data Request&rdquo;</strong> and the email address associated with your account.
             </p>
           </section>
 
