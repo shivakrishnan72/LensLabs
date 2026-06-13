@@ -43,7 +43,7 @@ export default function BodyLensPage() {
 
         <div className="flex flex-wrap gap-3">
           <a
-            href="https://apps.apple.com/app/bodylens"
+            href="https://apps.apple.com/us/app/bodylens-tracker/id6765769466"
             className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-400 text-white font-semibold rounded-xl px-6 py-3 text-sm transition-colors"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
