@@ -50,7 +50,8 @@ export default function BodyLensPrivacyPage() {
 
             <h3 className="text-base font-medium text-slate-200 mt-5 mb-2">Data from integrations (optional)</h3>
             <ul className="list-disc pl-5 space-y-1 text-sm">
-              <li><strong>Apple Health:</strong> Steps, sleep, calorie burn, weight, body fat percentage, and workout data — only when you grant permission. Read from HealthKit; never written back without your action.</li>
+              <li><strong>Apple Health (iOS):</strong> Steps, sleep, calorie burn, weight, body fat percentage, and workout data — only when you grant permission in Settings → Privacy &amp; Security → Health. Read from HealthKit; never written back without your action.</li>
+              <li><strong>Health Connect (Android):</strong> Steps, sleep, calorie burn, weight, body fat percentage, and workout data — only when you grant permission through the Health Connect app. Read-only; BodyLens never writes health data back to Health Connect.</li>
               <li><strong>Strava:</strong> Activity name, type, duration, and distance from your connected Strava account. Requires explicit OAuth sign-in.</li>
             </ul>
 
@@ -62,7 +63,7 @@ export default function BodyLensPrivacyPage() {
 
             <h3 className="text-base font-medium text-slate-200 mt-5 mb-2">Location data (optional)</h3>
             <ul className="list-disc pl-5 space-y-1 text-sm">
-              <li>If you set up workout location reminders, BodyLens uses <strong>background location monitoring</strong> (iOS &ldquo;Always&rdquo; permission) to detect when you leave a saved workout location such as a gym or court. This triggers a smart recovery reminder notification.</li>
+              <li>If you set up workout location reminders, BodyLens uses <strong>background location monitoring</strong> to detect when you leave a saved workout location such as a gym or court. This triggers a smart recovery reminder notification. On iOS this requires the &ldquo;Always&rdquo; location permission; on Android it requires the &ldquo;Allow all the time&rdquo; background location permission, which you grant through device Settings after an initial in-app disclosure.</li>
               <li>The names and coordinates (latitude, longitude, radius) of your saved locations are stored only on your device and are never uploaded to our servers.</li>
               <li>Location monitoring only occurs while you have saved locations set up. You can remove all locations at any time from Settings → Workout Locations, which also stops background monitoring.</li>
             </ul>

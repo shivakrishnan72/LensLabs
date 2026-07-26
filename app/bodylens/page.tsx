@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 const features = [
   { icon: "🥗", title: "Food & Calorie Logging", desc: "Log meals manually, scan barcodes, or use AI camera scan to identify food from a photo. Tracks calories, macros, fiber, and added sugar." },
-  { icon: "🏋️", title: "Workout Tracking", desc: "Syncs workouts automatically from Apple Health and Strava. Captures activity type, duration, and distance." },
+  { icon: "🏋️", title: "Workout Tracking", desc: "Syncs workouts automatically from Apple Health (iOS), Health Connect (Android), and Strava. Captures activity type, duration, and distance." },
   { icon: "📊", title: "AI Weekly Insights", desc: "Every week, an AI coach reviews your logs and delivers a personalized narrative — what's working, what to improve, and trends to watch." },
   { icon: "💧", title: "Water & Steps", desc: "Track daily water intake and step count. Set targets and see progress at a glance on the Today screen." },
   { icon: "📖", title: "Recipe Builder", desc: "Create multi-ingredient recipes with serving sizes. Log any number of servings to your diary with correct macro math." },
