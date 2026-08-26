@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: "Privacy policy for the BodyLens app.",
 };
 
-const EFFECTIVE_DATE = "June 1, 2026";
+const EFFECTIVE_DATE = "August 23, 2026";
 const CONTACT_EMAIL = "privacy@lenslabs.app";
 
 export default function BodyLensPrivacyPage() {
@@ -115,7 +115,17 @@ export default function BodyLensPrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-white mb-3">6. Data Sharing</h2>
+            <h2 className="text-lg font-semibold text-white mb-3">6. Data Retention</h2>
+            <ul className="list-disc pl-5 space-y-1 text-sm">
+              <li>We retain the data described in Section 2 for as long as your account remains active and you continue using BodyLens.</li>
+              <li>Cloud-stored data (synced via Supabase) is permanently deleted the moment you delete your account (Settings → Account → Delete Account — see Section 8). There is no additional retention period afterward.</li>
+              <li>Data stored only on your device (profile information, workout location geofences, AI scan history, progress photos) is retained locally for as long as the app remains installed, and is removed when you uninstall the app or delete your account.</li>
+              <li>If you stop using BodyLens without deleting your account, your cloud-stored data remains stored under this policy until you delete your account yourself or contact us to request deletion.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-lg font-semibold text-white mb-3">7. Data Sharing</h2>
             <p className="text-sm">We share data with the following third parties only as needed to operate the app:</p>
             <ul className="list-disc pl-5 space-y-1 text-sm mt-2">
               <li><strong>Supabase</strong> — cloud database and authentication</li>
@@ -127,7 +137,7 @@ export default function BodyLensPrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-white mb-3">7. Your Rights</h2>
+            <h2 className="text-lg font-semibold text-white mb-3">8. Your Rights</h2>
             <ul className="list-disc pl-5 space-y-1 text-sm">
               <li><strong>Access:</strong> All data you&apos;ve entered is visible directly in the app.</li>
               <li><strong>Deletion:</strong> You can delete your account from Settings → Account → Delete Account. This permanently erases all cloud data and wipes the local database. Deletion is irreversible.</li>
@@ -136,28 +146,28 @@ export default function BodyLensPrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-white mb-3">8. Children</h2>
+            <h2 className="text-lg font-semibold text-white mb-3">9. Children</h2>
             <p className="text-sm">
               BodyLens is not directed at children under 13. We do not knowingly collect data from children under 13. If you believe a child has provided us data, contact us and we will delete it.
             </p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-white mb-3">9. Medical Disclaimer</h2>
+            <h2 className="text-lg font-semibold text-white mb-3">10. Medical Disclaimer</h2>
             <p className="text-sm">
               BodyLens is not a medical device and does not provide medical advice. Content is for informational and educational purposes only. Always consult a qualified healthcare professional before making any health, nutrition, or fitness decisions.
             </p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-white mb-3">10. Changes to This Policy</h2>
+            <h2 className="text-lg font-semibold text-white mb-3">11. Changes to This Policy</h2>
             <p className="text-sm">
               We may update this policy from time to time. Material changes will be communicated via an in-app notice. Continued use of the app after changes take effect constitutes acceptance of the revised policy.
             </p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-white mb-3">11. Contact</h2>
+            <h2 className="text-lg font-semibold text-white mb-3">12. Contact</h2>
             <p className="text-sm">
               Questions about this policy? Email us at{" "}
               <a href={`mailto:${CONTACT_EMAIL}`} className="text-sky-400 hover:underline">{CONTACT_EMAIL}</a>.
