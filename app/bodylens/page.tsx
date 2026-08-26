@@ -7,11 +7,17 @@ export const metadata: Metadata = {
 };
 
 const features = [
-  { icon: "🥗", title: "Food & Calorie Logging", desc: "Log meals manually, scan barcodes, or use AI camera scan to identify food from a photo. Tracks calories, macros, fiber, and added sugar." },
-  { icon: "🏋️", title: "Workout Tracking", desc: "Syncs workouts automatically from Apple Health (iOS), Health Connect (Android), and Strava. Captures activity type, duration, and distance." },
+  { icon: "🥗", title: "Food & Calorie Logging", desc: "Log meals by search, barcode scan, AI camera scan, or just talking. Tracks calories, macros, fiber, and added sugar — with an editable AI scan and a color-coded Health Score on every food." },
+  { icon: "🎯", title: "Fixed or Moving Targets", desc: "Set a static daily calorie goal, or a Moving target tied to your actual burn (e.g. Burn − 300). Not sure where to start? Find My Targets calculates one for you from your weight, goal, and timeline." },
+  { icon: "🍽️", title: "Meal Budget & Suggestions", desc: "Your target splits into breakfast/lunch/dinner budgets with carryover. Suggest a Meal builds a suggestion from what you actually eat, scaled to fit what's left in your budget." },
+  { icon: "⏱️", title: "Intermittent Fasting", desc: "12–20 hour fasting goals with a live timer on your dashboard, fixed-schedule or log-based, plus a notification the moment your eating window opens." },
+  { icon: "🏋️", title: "Workout Tracking", desc: "Syncs workouts automatically from Apple Health (iOS), Health Connect (Android), and Strava — including Garmin, Fitbit, Whoop, Oura, and Polar through their own companion apps." },
+  { icon: "📈", title: "Weight & Activity Chart", desc: "Weight and body fat on one chart, overlaid with your cardio/strength activity and daily calorie deficit or surplus — see your own patterns, nothing inferred for you." },
   { icon: "📊", title: "AI Weekly Insights", desc: "Every week, an AI coach reviews your logs and delivers a personalized narrative — what's working, what to improve, and trends to watch." },
-  { icon: "💧", title: "Water & Steps", desc: "Track daily water intake and step count. Set targets and see progress at a glance on the Today screen." },
+  { icon: "🎙️", title: "Voice Logging", desc: "Log food, weight, water, sleep, steps, or activity just by speaking naturally. Transcribed entirely on-device — nothing is recorded or sent anywhere." },
+  { icon: "📷", title: "Progress Photos", desc: "Private, on-device photo history for side-by-side comparison over time — often shows changes the scale alone misses." },
   { icon: "📖", title: "Recipe Builder", desc: "Create multi-ingredient recipes with serving sizes. Log any number of servings to your diary with correct macro math." },
+  { icon: "💧", title: "Water & Steps", desc: "Track daily water intake and step count. Set targets and see progress at a glance on the Today screen." },
   { icon: "📴", title: "Offline-First", desc: "All data lives on your device. Everything works without internet — syncs to the cloud when connected." },
 ];
 
@@ -68,6 +74,11 @@ export default function BodyLensPage() {
               <p className="text-slate-400 text-sm leading-relaxed">{f.desc}</p>
             </div>
           ))}
+        </div>
+        <div className="mt-8">
+          <Link href="/bodylens/guide" className="inline-flex items-center gap-2 text-sky-400 hover:underline text-sm font-medium">
+            See how it all works, feature by feature →
+          </Link>
         </div>
       </section>
 
