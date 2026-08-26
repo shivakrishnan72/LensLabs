@@ -13,6 +13,7 @@ interface GuideSection {
   image: string;
   alt: string;
   paragraphs: string[];
+  note?: string;
 }
 
 const SECTIONS: GuideSection[] = [
@@ -41,8 +42,8 @@ const SECTIONS: GuideSection[] = [
   {
     slug: "logging",
     title: "Four ways to log food",
-    image: "/bodylens/guide/scan.png",
-    alt: "BodyLens AI food scan results screen with editable identified food items",
+    image: "/bodylens/guide/scan.jpg",
+    alt: "BodyLens Scan Meal camera view pointed at a plate of food",
     paragraphs: [
       "Search your personal or global food database, scan a barcode for instant nutrition facts, point the camera at your plate for AI food identification, or just talk — say \"I had chicken and rice for lunch\" and it's logged.",
       "AI scan results are fully editable before you save them: rename anything the AI got wrong, uncheck items you don't want, and adjust each portion's serving multiplier — nothing gets logged until you confirm it.",
@@ -64,7 +65,7 @@ const SECTIONS: GuideSection[] = [
   {
     slug: "fasting",
     title: "Intermittent fasting, built in",
-    image: "/bodylens/guide/fasting.png",
+    image: "/bodylens/guide/fasting.jpg",
     alt: "BodyLens intermittent fasting timer card showing eating window countdown",
     paragraphs: [
       "Choose a fasting goal — 12, 14, 16, 18, or 20 hours — and BodyLens tracks it for you right on the Today dashboard. Fixed Schedule mode works purely off the clock from a set eating-window start time; Log-Based mode starts the timer automatically from your last logged meal, for schedules that shift day to day.",
@@ -74,7 +75,7 @@ const SECTIONS: GuideSection[] = [
   {
     slug: "weight-chart",
     title: "See your whole story on one chart",
-    image: "/bodylens/guide/weight-chart.png",
+    image: "/bodylens/guide/weight-chart.jpg",
     alt: "BodyLens Weight chart with body fat overlay, activity dots, and a calorie deficit/surplus strip",
     paragraphs: [
       "The History tab's Weight chart overlays your body fat percentage automatically once you've logged any — weight stalling while body fat drops usually means you're building muscle, not spinning your wheels.",
@@ -84,7 +85,7 @@ const SECTIONS: GuideSection[] = [
   {
     slug: "health-sync",
     title: "Your wearable data, automatically",
-    image: "/bodylens/guide/health-sync.png",
+    image: "/bodylens/guide/health-sync.jpg",
     alt: "BodyLens Health Sync screen showing imported steps, calories, and workouts",
     paragraphs: [
       "Connect Apple Health (iOS) or Health Connect (Android) once, and steps, calories burned, sleep, weight, body fat, and workouts flow in automatically — no manual entry. It works with virtually any wearable that syncs through those platforms, including Garmin, Fitbit, Whoop, Oura Ring, and Polar, through each device's own companion app.",
@@ -94,7 +95,7 @@ const SECTIONS: GuideSection[] = [
   {
     slug: "voice",
     title: "Log by talking, not typing",
-    image: "/bodylens/guide/voice.png",
+    image: "/bodylens/guide/voice.jpg",
     alt: "BodyLens voice logging modal actively listening",
     paragraphs: [
       "Tap the mic and speak naturally — \"I ate a banana and some oats,\" \"I weigh 175 pounds,\" \"walked 30 minutes,\" \"slept seven and a half hours,\" or \"two glasses of water.\" BodyLens parses food, weight, water, sleep, steps, and activity from natural speech in one shot, no rigid phrasing required.",
@@ -104,16 +105,17 @@ const SECTIONS: GuideSection[] = [
   {
     slug: "progress-photos",
     title: "Progress Photos",
-    image: "/bodylens/guide/progress-photos.png",
+    image: "/bodylens/guide/progress-photos.jpg",
     alt: "BodyLens Progress Photos comparison view",
     paragraphs: [
       "Photos are stored privately on your device only — never uploaded to the cloud. Side-by-side comparison over time often shows physical changes the scale alone misses, especially when your weight is holding steady but your body composition is genuinely shifting.",
     ],
+    note: "The photo above is an AI-generated illustration, not a real user.",
   },
   {
     slug: "insights",
     title: "Weekly AI insights",
-    image: "/bodylens/guide/insights.png",
+    image: "/bodylens/guide/insights.jpg",
     alt: "BodyLens Insights screen showing an AI-generated weekly narrative",
     paragraphs: [
       "Every week, an AI coach reviews your logs and writes a plain-language narrative — what's working, what to adjust, and trends worth watching — instead of leaving you to interpret a wall of charts yourself. A Momentum score (0–100) reflects your consistency: logging frequency, hitting targets, and workout days.",
@@ -160,6 +162,7 @@ export default function BodyLensGuidePage() {
             <div className={`flex flex-col ${i % 2 === 1 ? "md:flex-row-reverse" : "md:flex-row"} gap-10 items-center`}>
               <div className="w-full md:w-[280px] shrink-0">
                 <FeatureShot src={s.image} alt={s.alt} />
+                {s.note && <p className="text-xs text-slate-600 italic text-center mt-3">{s.note}</p>}
               </div>
               <div className="flex-1">
                 <h2 className="text-2xl font-bold text-white mb-4">{s.title}</h2>
