@@ -57,9 +57,15 @@ export default function BodyLensPage() {
             </svg>
             Download on App Store
           </a>
-          <span className="inline-flex items-center gap-2 bg-white/5 border border-white/10 text-slate-400 font-medium rounded-xl px-6 py-3 text-sm">
-            Android — Coming soon
-          </span>
+          <a
+            href="https://play.google.com/store/apps/details?id=com.lenslabs.bodylens"
+            className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-400 text-white font-semibold rounded-xl px-6 py-3 text-sm transition-colors"
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M3 20.5v-17c0-.59.34-1.11.84-1.35L13.69 12l-9.85 9.85c-.5-.24-.84-.75-.84-1.35zM16.81 15.12L6.05 21.34l8.49-8.49 2.27 2.27zm3.35-6.87c.34.27.59.68.59 1.17s-.22.85-.53 1.13l-2.29 1.32-2.5-2.5 2.5-2.5 2.23 1.38zM6.05 2.66l10.76 6.22-2.27 2.27L6.05 2.66z" />
+            </svg>
+            Get it on Google Play
+          </a>
         </div>
       </section>
 
