@@ -113,7 +113,7 @@ export default async function CoachReportPage({ params }: { params: Promise<{ to
     return (
       <div className="flex flex-col min-h-full">
         <nav className="px-6 py-5 max-w-3xl mx-auto w-full">
-          <Link href="/" className="text-lg font-bold tracking-tight text-white">LensLabs</Link>
+          <Link href="/bodylens" className="text-lg font-bold tracking-tight text-white">BodyLens</Link>
         </nav>
         <div className="flex-1 flex items-center justify-center px-6">
           <div className="max-w-sm text-center">
@@ -133,8 +133,8 @@ export default async function CoachReportPage({ params }: { params: Promise<{ to
   return (
     <div className="flex flex-col min-h-full">
       <nav className="px-6 py-5 max-w-3xl mx-auto w-full flex items-center justify-between">
-        <Link href="/" className="text-lg font-bold tracking-tight text-white">LensLabs</Link>
-        <span className="text-xs text-slate-500">BodyLens</span>
+        <Link href="/bodylens" className="text-lg font-bold tracking-tight text-white">BodyLens</Link>
+        <span className="text-xs text-slate-500">by LensLabs</span>
       </nav>
 
       <main className="px-6 pb-16 max-w-3xl mx-auto w-full flex-1">
