@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { WeightBodyFatChart, AdherenceChart } from "./Charts";
 
 export const metadata: Metadata = {
   title: "Progress Report",
@@ -166,7 +167,8 @@ export default async function CoachReportPage({ params }: { params: Promise<{ to
             {data.targets?.cal_target != null && (
               <p className="text-xs text-slate-500 mb-4">Target: {data.targets.cal_target} cal/day{data.targets.protein_target != null ? ` · ${data.targets.protein_target}g protein` : ""}</p>
             )}
-            <div className="overflow-x-auto">
+            <AdherenceChart days={data.adherence} />
+            <div className="overflow-x-auto mt-4">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="text-left text-slate-500 text-xs">
@@ -202,25 +204,18 @@ export default async function CoachReportPage({ params }: { params: Promise<{ to
         {data.weight_trend && data.weight_trend.length > 0 && (
           <section className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6">
             <h2 className="text-sm font-semibold text-white mb-4">Weight &amp; Body Fat</h2>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="text-left text-slate-500 text-xs">
-                    <th className="pb-2 pr-4 font-medium">Date</th>
-                    <th className="pb-2 pr-4 font-medium">Weight</th>
-                    <th className="pb-2 font-medium">Body Fat %</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.weight_trend.map((w) => (
-                    <tr key={w.date} className="border-t border-white/5">
-                      <td className="py-2 pr-4 text-slate-300">{formatDate(w.date)}</td>
-                      <td className="py-2 pr-4 text-slate-300">{w.weight ?? "—"}</td>
-                      <td className="py-2 text-slate-300">{w.body_fat_pct ?? "—"}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <WeightBodyFatChart points={data.weight_trend} />
+            <div className="flex items-center justify-center gap-5 mt-3">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-sky-400" />
+                <span className="text-xs text-slate-500">Weight</span>
+              </div>
+              {data.weight_trend.some((w) => w.body_fat_pct != null) && (
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-violet-400" />
+                  <span className="text-xs text-slate-500">Body Fat %</span>
+                </div>
+              )}
             </div>
           </section>
         )}
