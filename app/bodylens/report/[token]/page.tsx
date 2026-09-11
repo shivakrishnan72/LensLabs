@@ -217,6 +217,26 @@ export default async function CoachReportPage({ params }: { params: Promise<{ to
                 </div>
               )}
             </div>
+            <div className="overflow-x-auto mt-4">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-left text-slate-500 text-xs">
+                    <th className="pb-2 pr-4 font-medium">Date</th>
+                    <th className="pb-2 pr-4 font-medium">Weight</th>
+                    <th className="pb-2 font-medium">Body Fat %</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.weight_trend.map((w) => (
+                    <tr key={w.date} className="border-t border-white/5">
+                      <td className="py-2 pr-4 text-slate-300">{formatDate(w.date)}</td>
+                      <td className="py-2 pr-4 text-slate-300">{w.weight ?? "—"}</td>
+                      <td className="py-2 text-slate-300">{w.body_fat_pct ?? "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </section>
         )}
 

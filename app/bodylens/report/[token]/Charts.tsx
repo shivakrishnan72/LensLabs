@@ -124,8 +124,13 @@ export function AdherenceChart({ days }: { days: AdherenceDay[] }) {
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto">
       <line x1={PAD.left} y1={midY} x2={PAD.left + INNER_W} y2={midY} stroke="#1e293b" strokeWidth={1} />
-      <text x={PAD.left - 6} y={PAD.top + 10} fontSize={10} fill="#64748b" textAnchor="end">deficit</text>
-      <text x={PAD.left - 6} y={H - PAD.bottom - 2} fontSize={10} fill="#64748b" textAnchor="end">surplus</text>
+      <line x1={PAD.left} y1={midY - halfH} x2={PAD.left + INNER_W} y2={midY - halfH} stroke="#1e293b" strokeWidth={1} />
+      <line x1={PAD.left} y1={midY + halfH} x2={PAD.left + INNER_W} y2={midY + halfH} stroke="#1e293b" strokeWidth={1} />
+      <text x={PAD.left - 6} y={midY - halfH + 4} fontSize={10} fill="#64748b" textAnchor="end">{maxAbs} cal</text>
+      <text x={PAD.left - 6} y={midY + 4} fontSize={10} fill="#64748b" textAnchor="end">0</text>
+      <text x={PAD.left - 6} y={midY + halfH + 4} fontSize={10} fill="#64748b" textAnchor="end">{maxAbs} cal</text>
+      <text x={PAD.left + INNER_W + 6} y={midY - halfH + 4} fontSize={10} fill="#64748b" textAnchor="start">deficit</text>
+      <text x={PAD.left + INNER_W + 6} y={midY + halfH + 4} fontSize={10} fill="#64748b" textAnchor="start">surplus</text>
       {withData.map((d, i) => {
         const v = d.deficit_surplus as number;
         const h = Math.min(halfH, (Math.abs(v) / maxAbs) * halfH);
