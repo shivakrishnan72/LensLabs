@@ -114,7 +114,13 @@ export function AdherenceChart({ days }: { days: AdherenceDay[] }) {
   const span = Math.max(1, daysBetween(minDate, days[days.length - 1].date));
   const xAt = (date: string) => PAD.left + (daysBetween(minDate, date) / span) * INNER_W;
 
-  const maxAbs = Math.max(300, ...withData.map((d) => Math.abs(d.deficit_surplus as number)));
+  // Scale by the 85th percentile, not the single largest value — one or two outlier days
+  // (e.g. a big social event) would otherwise dominate the whole axis and squash every
+  // typical day down to a sliver. Outlier bars simply clip at full height instead; the exact
+  // number is still in the table below.
+  const sortedAbs = withData.map((d) => Math.abs(d.deficit_surplus as number)).sort((a, b) => a - b);
+  const percentileIdx = Math.min(sortedAbs.length - 1, Math.floor(0.85 * sortedAbs.length));
+  const maxAbs = Math.max(300, sortedAbs[percentileIdx]);
   const midY = PAD.top + INNER_H / 2;
   const halfH = INNER_H / 2 - 4;
   const barW = Math.max(3, INNER_W / days.length - 3);
