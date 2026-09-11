@@ -18,7 +18,10 @@ interface FoodLogEntry {
   protein: number; fiber: number; added_sugar: number; multiplier: number;
 }
 interface WeightPoint { date: string; weight: number | null; body_fat_pct: number | null }
-interface AdherenceDay { date: string; cal_consumed: number | null; cal_burnt: number | null; deficit_surplus: number | null }
+interface AdherenceDay {
+  date: string; cal_consumed: number | null; cal_burnt: number | null; deficit_surplus: number | null;
+  protein: number | null; fiber: number | null; added_sugar: number | null;
+}
 interface Targets { cal_target: number | null; protein_target: number | null }
 interface WorkoutEntry {
   date: string; activity_type: string; name: string | null;
@@ -72,6 +75,35 @@ function formatDistance(m: number | null): string {
   return `${(m / 1000).toFixed(1)} km`;
 }
 
+interface FoodDayGroup {
+  date: string;
+  items: FoodLogEntry[];
+  totals: { cal: number; protein: number; carb: number; fat: number; fiber: number; added_sugar: number };
+}
+
+// food_log_entries' macro columns are already the final (post-multiplier) values — see
+// addFoodLogEntry in lib/queries.ts — so these are summed as-is, never multiplied again.
+function groupFoodLogByDate(entries: FoodLogEntry[]): FoodDayGroup[] {
+  const byDate = new Map<string, FoodLogEntry[]>();
+  for (const e of entries) {
+    const list = byDate.get(e.date) ?? [];
+    list.push(e);
+    byDate.set(e.date, list);
+  }
+  return Array.from(byDate.entries()).map(([date, items]) => ({
+    date,
+    items,
+    totals: items.reduce((acc, i) => ({
+      cal: acc.cal + i.cal,
+      protein: acc.protein + i.protein,
+      carb: acc.carb + i.carb,
+      fat: acc.fat + i.fat,
+      fiber: acc.fiber + i.fiber,
+      added_sugar: acc.added_sugar + i.added_sugar,
+    }), { cal: 0, protein: 0, carb: 0, fat: 0, fiber: 0, added_sugar: 0 }),
+  }));
+}
+
 export default async function CoachReportPage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
   const { data, errorKey } = await fetchReport(token);
@@ -114,13 +146,17 @@ export default async function CoachReportPage({ params }: { params: Promise<{ to
           </p>
         </div>
 
-        {data.insight && (
+        {"insight" in data && (
           <section className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6">
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-sm font-semibold text-white">Weekly Insight</h2>
-              <span className="text-xs text-slate-500">Week of {formatDate(data.insight.week_start)}</span>
+              {data.insight && <span className="text-xs text-slate-500">Week of {formatDate(data.insight.week_start)}</span>}
             </div>
-            <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-line">{data.insight.narrative}</p>
+            {data.insight ? (
+              <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-line">{data.insight.narrative}</p>
+            ) : (
+              <p className="text-slate-500 text-sm">No insight generated yet this week.</p>
+            )}
           </section>
         )}
 
@@ -137,7 +173,10 @@ export default async function CoachReportPage({ params }: { params: Promise<{ to
                     <th className="pb-2 pr-4 font-medium">Date</th>
                     <th className="pb-2 pr-4 font-medium">Consumed</th>
                     <th className="pb-2 pr-4 font-medium">Burned</th>
-                    <th className="pb-2 font-medium">Deficit/Surplus</th>
+                    <th className="pb-2 pr-4 font-medium">Deficit/Surplus</th>
+                    <th className="pb-2 pr-4 font-medium">Protein</th>
+                    <th className="pb-2 pr-4 font-medium">Fiber</th>
+                    <th className="pb-2 font-medium">Added Sugar</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -146,9 +185,12 @@ export default async function CoachReportPage({ params }: { params: Promise<{ to
                       <td className="py-2 pr-4 text-slate-300">{formatDate(d.date)}</td>
                       <td className="py-2 pr-4 text-slate-300">{d.cal_consumed ?? "—"}</td>
                       <td className="py-2 pr-4 text-slate-300">{d.cal_burnt ?? "—"}</td>
-                      <td className="py-2 text-slate-300">
+                      <td className="py-2 pr-4 text-slate-300">
                         {d.deficit_surplus == null ? "—" : d.deficit_surplus >= 0 ? `${d.deficit_surplus} deficit` : `${Math.abs(d.deficit_surplus)} surplus`}
                       </td>
+                      <td className="py-2 pr-4 text-slate-300">{d.protein != null ? `${d.protein}g` : "—"}</td>
+                      <td className="py-2 pr-4 text-slate-300">{d.fiber != null ? `${d.fiber}g` : "—"}</td>
+                      <td className="py-2 text-slate-300">{d.added_sugar != null ? `${d.added_sugar}g` : "—"}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -205,29 +247,45 @@ export default async function CoachReportPage({ params }: { params: Promise<{ to
         {data.food_log && data.food_log.length > 0 && (
           <section className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6">
             <h2 className="text-sm font-semibold text-white mb-4">Food Diary</h2>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="text-left text-slate-500 text-xs">
-                    <th className="pb-2 pr-4 font-medium">Date</th>
-                    <th className="pb-2 pr-4 font-medium">Food</th>
-                    <th className="pb-2 pr-4 font-medium">Cal</th>
-                    <th className="pb-2 font-medium">P / C / F</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.food_log.map((f, i) => (
-                    <tr key={i} className="border-t border-white/5">
-                      <td className="py-2 pr-4 text-slate-500 text-xs">{formatDate(f.date)}</td>
-                      <td className="py-2 pr-4 text-slate-300">{f.food_name}</td>
-                      <td className="py-2 pr-4 text-slate-300">{Math.round(f.cal * f.multiplier)}</td>
-                      <td className="py-2 text-slate-500 text-xs">
-                        {Math.round(f.protein * f.multiplier)}g / {Math.round(f.carb * f.multiplier)}g / {Math.round(f.fat * f.multiplier)}g
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="flex flex-col gap-6">
+              {groupFoodLogByDate(data.food_log).map((day) => (
+                <div key={day.date} className="overflow-x-auto">
+                  <p className="text-xs text-slate-500 mb-2">{formatDate(day.date)}</p>
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="text-left text-slate-500 text-xs">
+                        <th className="pb-2 pr-4 font-medium">Food</th>
+                        <th className="pb-2 pr-4 font-medium">Cal</th>
+                        <th className="pb-2 pr-4 font-medium">P / C / F</th>
+                        <th className="pb-2 pr-4 font-medium">Fiber</th>
+                        <th className="pb-2 font-medium">Added Sugar</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {day.items.map((f, i) => (
+                        <tr key={i} className="border-t border-white/5">
+                          <td className="py-2 pr-4 text-slate-300">{f.food_name}</td>
+                          <td className="py-2 pr-4 text-slate-300">{Math.round(f.cal)}</td>
+                          <td className="py-2 pr-4 text-slate-500 text-xs">
+                            {Math.round(f.protein)}g / {Math.round(f.carb)}g / {Math.round(f.fat)}g
+                          </td>
+                          <td className="py-2 pr-4 text-slate-500 text-xs">{Math.round(f.fiber)}g</td>
+                          <td className="py-2 text-slate-500 text-xs">{Math.round(f.added_sugar)}g</td>
+                        </tr>
+                      ))}
+                      <tr className="border-t border-white/10">
+                        <td className="py-2 pr-4 text-white text-xs font-semibold">Daily Total</td>
+                        <td className="py-2 pr-4 text-white text-xs font-semibold">{Math.round(day.totals.cal)}</td>
+                        <td className="py-2 pr-4 text-slate-300 text-xs font-semibold">
+                          {Math.round(day.totals.protein)}g / {Math.round(day.totals.carb)}g / {Math.round(day.totals.fat)}g
+                        </td>
+                        <td className="py-2 pr-4 text-slate-300 text-xs font-semibold">{Math.round(day.totals.fiber)}g</td>
+                        <td className="py-2 text-slate-300 text-xs font-semibold">{Math.round(day.totals.added_sugar)}g</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              ))}
             </div>
           </section>
         )}
