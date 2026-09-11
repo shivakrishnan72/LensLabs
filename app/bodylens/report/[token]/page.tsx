@@ -256,7 +256,9 @@ export default async function CoachReportPage({ params }: { params: Promise<{ to
                       <tr className="text-left text-slate-500 text-xs">
                         <th className="pb-2 pr-4 font-medium">Food</th>
                         <th className="pb-2 pr-4 font-medium">Cal</th>
-                        <th className="pb-2 pr-4 font-medium">P / C / F</th>
+                        <th className="pb-2 pr-4 font-medium">Protein</th>
+                        <th className="pb-2 pr-4 font-medium">Carbs</th>
+                        <th className="pb-2 pr-4 font-medium">Fat</th>
                         <th className="pb-2 pr-4 font-medium">Fiber</th>
                         <th className="pb-2 font-medium">Added Sugar</th>
                       </tr>
@@ -266,9 +268,9 @@ export default async function CoachReportPage({ params }: { params: Promise<{ to
                         <tr key={i} className="border-t border-white/5">
                           <td className="py-2 pr-4 text-slate-300">{f.food_name}</td>
                           <td className="py-2 pr-4 text-slate-300">{Math.round(f.cal)}</td>
-                          <td className="py-2 pr-4 text-slate-500 text-xs">
-                            {Math.round(f.protein)}g / {Math.round(f.carb)}g / {Math.round(f.fat)}g
-                          </td>
+                          <td className="py-2 pr-4 text-slate-500 text-xs">{Math.round(f.protein)}g</td>
+                          <td className="py-2 pr-4 text-slate-500 text-xs">{Math.round(f.carb)}g</td>
+                          <td className="py-2 pr-4 text-slate-500 text-xs">{Math.round(f.fat)}g</td>
                           <td className="py-2 pr-4 text-slate-500 text-xs">{Math.round(f.fiber)}g</td>
                           <td className="py-2 text-slate-500 text-xs">{Math.round(f.added_sugar)}g</td>
                         </tr>
@@ -276,9 +278,9 @@ export default async function CoachReportPage({ params }: { params: Promise<{ to
                       <tr className="border-t border-white/10">
                         <td className="py-2 pr-4 text-white text-xs font-semibold">Daily Total</td>
                         <td className="py-2 pr-4 text-white text-xs font-semibold">{Math.round(day.totals.cal)}</td>
-                        <td className="py-2 pr-4 text-slate-300 text-xs font-semibold">
-                          {Math.round(day.totals.protein)}g / {Math.round(day.totals.carb)}g / {Math.round(day.totals.fat)}g
-                        </td>
+                        <td className="py-2 pr-4 text-slate-300 text-xs font-semibold">{Math.round(day.totals.protein)}g</td>
+                        <td className="py-2 pr-4 text-slate-300 text-xs font-semibold">{Math.round(day.totals.carb)}g</td>
+                        <td className="py-2 pr-4 text-slate-300 text-xs font-semibold">{Math.round(day.totals.fat)}g</td>
                         <td className="py-2 pr-4 text-slate-300 text-xs font-semibold">{Math.round(day.totals.fiber)}g</td>
                         <td className="py-2 text-slate-300 text-xs font-semibold">{Math.round(day.totals.added_sugar)}g</td>
                       </tr>
