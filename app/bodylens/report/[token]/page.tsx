@@ -292,6 +292,16 @@ export default async function CoachReportPage({ params }: { params: Promise<{ to
           </section>
         )}
 
+        <section className="bg-gradient-to-r from-sky-500/10 to-indigo-500/10 border border-sky-500/20 rounded-2xl p-6 text-center">
+          <p className="text-sm text-slate-300 mb-3">Curious what's behind this report?</p>
+          <Link
+            href="/bodylens"
+            className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-400 text-white font-semibold rounded-xl px-6 py-3 text-sm transition-colors"
+          >
+            Learn more about BodyLens
+          </Link>
+        </section>
+
         <p className="text-xs text-slate-600 text-center mt-8">
           Shared via BodyLens · Read-only · This link updates automatically
         </p>
