@@ -122,7 +122,12 @@ export function AdherenceChart({ days }: { days: AdherenceDay[] }) {
   const percentileIdx = Math.min(sortedAbs.length - 1, Math.floor(0.85 * sortedAbs.length));
   const maxAbs = Math.max(300, sortedAbs[percentileIdx]);
   const midY = PAD.top + INNER_H / 2;
-  const halfH = INNER_H / 2 - 4;
+  // A bar that exceeds maxAbs gets a short amber "overflow tip" past the gridline — two
+  // independent signals (extends past the line, and changes color) rather than relying on
+  // either alone, since a same-height bar would otherwise look identical whether it was
+  // exactly at the scale or far beyond it.
+  const OVERFLOW_TIP = 8;
+  const halfH = INNER_H / 2 - OVERFLOW_TIP - 4;
   const barW = Math.max(3, INNER_W / days.length - 3);
 
   const labelPoints = [days[0], days[Math.floor((days.length - 1) / 2)], days[days.length - 1]];
@@ -139,9 +144,26 @@ export function AdherenceChart({ days }: { days: AdherenceDay[] }) {
       <text x={PAD.left + INNER_W + 6} y={midY + halfH + 4} fontSize={10} fill="#64748b" textAnchor="start">surplus</text>
       {withData.map((d, i) => {
         const v = d.deficit_surplus as number;
-        const h = Math.min(halfH, (Math.abs(v) / maxAbs) * halfH);
+        const absV = Math.abs(v);
+        const exceeds = absV > maxAbs;
+        const h = Math.min(halfH, (absV / maxAbs) * halfH);
+        const x = xAt(d.date) - barW / 2;
         const y = v >= 0 ? midY - h : midY;
-        return <rect key={i} x={xAt(d.date) - barW / 2} y={y} width={barW} height={h} fill="#64748b" rx={1} />;
+        return (
+          <g key={i}>
+            <rect x={x} y={y} width={barW} height={h} fill="#64748b" rx={1} />
+            {exceeds && (
+              <rect
+                x={x}
+                y={v >= 0 ? y - OVERFLOW_TIP : y + h}
+                width={barW}
+                height={OVERFLOW_TIP}
+                fill="#f59e0b"
+                rx={1}
+              />
+            )}
+          </g>
+        );
       })}
       {labelPoints.map((d, i) => (
         <text key={i} x={xAt(d.date)} y={H - 6} fontSize={10} fill="#64748b" textAnchor={i === 0 ? "start" : i === labelPoints.length - 1 ? "end" : "middle"}>
