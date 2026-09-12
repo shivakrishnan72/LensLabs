@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { WeightBodyFatChart, AdherenceChart } from "./Charts";
+import { WeightBodyFatChart, AdherenceChart, RecoveryChart } from "./Charts";
 
 export const metadata: Metadata = {
   title: "Progress Report",
@@ -23,6 +23,7 @@ interface AdherenceDay {
   date: string; cal_consumed: number | null; cal_burnt: number | null; deficit_surplus: number | null;
   protein: number | null; fiber: number | null; added_sugar: number | null;
 }
+interface RecoveryDay { date: string; sleep_hours: number | null; water_oz: number | null }
 interface Targets { cal_target: number | null; protein_target: number | null }
 interface WorkoutEntry {
   date: string; activity_type: string; name: string | null;
@@ -37,6 +38,7 @@ interface ReportPayload {
   food_log?: FoodLogEntry[];
   weight_trend?: WeightPoint[];
   adherence?: AdherenceDay[];
+  recovery?: RecoveryDay[];
   targets?: Targets | null;
   workouts?: WorkoutEntry[];
   insight?: Insight | null;
@@ -74,6 +76,12 @@ function formatDuration(secs: number | null): string {
 function formatDistance(m: number | null): string {
   if (!m) return "";
   return `${(m / 1000).toFixed(1)} km`;
+}
+function formatSleep(hours: number | null): string {
+  if (hours == null) return "—";
+  const h = Math.floor(hours);
+  const m = Math.round((hours - h) * 60);
+  return m === 0 ? `${h}h` : `${h}h ${m}m`;
 }
 
 interface FoodDayGroup {
@@ -193,6 +201,43 @@ export default async function CoachReportPage({ params }: { params: Promise<{ to
                       <td className="py-2 pr-4 text-slate-300">{d.protein != null ? `${d.protein}g` : "—"}</td>
                       <td className="py-2 pr-4 text-slate-300">{d.fiber != null ? `${d.fiber}g` : "—"}</td>
                       <td className="py-2 text-slate-300">{d.added_sugar != null ? `${d.added_sugar}g` : "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
+
+        {data.recovery && data.recovery.length > 0 && (
+          <section className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6">
+            <h2 className="text-sm font-semibold text-white mb-4">Recovery &amp; Lifestyle</h2>
+            <RecoveryChart days={data.recovery} />
+            <div className="flex items-center justify-center gap-5 mt-3">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-sm bg-slate-600" />
+                <span className="text-xs text-slate-500">Water</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-sky-400" />
+                <span className="text-xs text-slate-500">Sleep</span>
+              </div>
+            </div>
+            <div className="overflow-x-auto mt-4">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-left text-slate-500 text-xs">
+                    <th className="pb-2 pr-4 font-medium">Date</th>
+                    <th className="pb-2 pr-4 font-medium">Sleep</th>
+                    <th className="pb-2 font-medium">Water</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.recovery.map((d) => (
+                    <tr key={d.date} className="border-t border-white/5">
+                      <td className="py-2 pr-4 text-slate-300">{formatDate(d.date)}</td>
+                      <td className="py-2 pr-4 text-slate-300">{formatSleep(d.sleep_hours)}</td>
+                      <td className="py-2 text-slate-300">{d.water_oz != null ? `${d.water_oz} oz` : "—"}</td>
                     </tr>
                   ))}
                 </tbody>

@@ -11,6 +11,12 @@ interface AdherenceDay {
   deficit_surplus: number | null;
 }
 
+interface RecoveryDay {
+  date: string;
+  sleep_hours: number | null;
+  water_oz: number | null;
+}
+
 const W = 800;
 const H = 220;
 const PAD = { top: 16, bottom: 28, left: 46, right: 46 };
@@ -165,6 +171,88 @@ export function AdherenceChart({ days }: { days: AdherenceDay[] }) {
           </g>
         );
       })}
+      {labelPoints.map((d, i) => (
+        <text key={i} x={xAt(d.date)} y={H - 6} fontSize={10} fill="#64748b" textAnchor={i === 0 ? "start" : i === labelPoints.length - 1 ? "end" : "middle"}>
+          {formatDate(d.date)}
+        </text>
+      ))}
+    </svg>
+  );
+}
+
+// Sleep and water both naturally start at a zero floor (unlike weight, which needs a min-max
+// stretch to be readable), so both scale from 0 up to a little past their own max instead —
+// simpler than percentile scaling since neither metric tends to have the kind of single-day
+// outlier that calorie surplus does.
+export function RecoveryChart({ days }: { days: RecoveryDay[] }) {
+  const withData = days.filter((d) => d.sleep_hours != null || d.water_oz != null);
+  if (withData.length < 2) return null;
+
+  const minDate = days[0].date;
+  const span = Math.max(1, daysBetween(minDate, days[days.length - 1].date));
+  const xAt = (date: string) => PAD.left + (daysBetween(minDate, date) / span) * INNER_W;
+
+  const waterDays = days.filter((d) => d.water_oz != null);
+  const showWater = waterDays.length > 0;
+  const waterMax = showWater ? Math.max(...waterDays.map((d) => d.water_oz as number)) : 0;
+  const waterScaleMax = Math.max(64, waterMax * 1.15);
+  const yAtWater = (v: number) => PAD.top + (1 - v / waterScaleMax) * INNER_H;
+
+  const sleepDays = days.filter((d) => d.sleep_hours != null);
+  const showSleep = sleepDays.length >= 2;
+  const sleepMax = showSleep ? Math.max(...sleepDays.map((d) => d.sleep_hours as number)) : 0;
+  const sleepScaleMax = Math.max(9, sleepMax * 1.15);
+  const yAtSleep = (v: number) => PAD.top + (1 - v / sleepScaleMax) * INNER_H;
+
+  function buildSleepSegments() {
+    const segments: string[][] = [];
+    let cur: string[] = [];
+    for (const d of days) {
+      if (d.sleep_hours == null) {
+        if (cur.length > 0) segments.push(cur);
+        cur = [];
+      } else {
+        cur.push(`${xAt(d.date)},${yAtSleep(d.sleep_hours)}`);
+      }
+    }
+    if (cur.length > 0) segments.push(cur);
+    return segments;
+  }
+  const sleepSegments = showSleep ? buildSleepSegments() : [];
+
+  // Sized off the real calendar span (not just how many days happen to have data), so bars stay
+  // visually consistent with their true x-spacing even when sleep/water logging is sparse.
+  const barW = Math.max(3, INNER_W / (span + 1) - 3);
+  const labelPoints = [days[0], days[Math.floor((days.length - 1) / 2)], days[days.length - 1]];
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto">
+      {[0, 0.5, 1].map((f) => {
+        const y = PAD.top + (1 - f) * INNER_H;
+        return <line key={f} x1={PAD.left} y1={y} x2={PAD.left + INNER_W} y2={y} stroke="#1e293b" strokeWidth={1} />;
+      })}
+      {showWater && [0, 0.5, 1].map((f) => (
+        <text key={f} x={PAD.left - 6} y={PAD.top + (1 - f) * INNER_H + 4} fontSize={10} fill="#64748b" textAnchor="end">
+          {Math.round(f * waterScaleMax)}oz
+        </text>
+      ))}
+      {showSleep && [0, 0.5, 1].map((f) => (
+        <text key={f} x={PAD.left + INNER_W + 6} y={PAD.top + (1 - f) * INNER_H + 4} fontSize={10} fill="#38bdf8" textAnchor="start">
+          {(f * sleepScaleMax).toFixed(0)}h
+        </text>
+      ))}
+      {showWater && waterDays.map((d, i) => {
+        const h = ((d.water_oz as number) / waterScaleMax) * INNER_H;
+        const x = xAt(d.date) - barW / 2;
+        const y = PAD.top + INNER_H - h;
+        return <rect key={i} x={x} y={y} width={barW} height={h} fill="#334155" rx={1} />;
+      })}
+      {showSleep && sleepSegments.map((seg, i) => (
+        <polyline key={`s${i}`} points={seg.join(" ")} fill="none" stroke="#38bdf8" strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" />
+      ))}
+      {showSleep && sleepDays.map((d, i) => (
+        <circle key={`sc${i}`} cx={xAt(d.date)} cy={yAtSleep(d.sleep_hours as number)} r={2.5} fill="#38bdf8" />
+      ))}
       {labelPoints.map((d, i) => (
         <text key={i} x={xAt(d.date)} y={H - 6} fontSize={10} fill="#64748b" textAnchor={i === 0 ? "start" : i === labelPoints.length - 1 ? "end" : "middle"}>
           {formatDate(d.date)}
