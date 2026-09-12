@@ -15,7 +15,12 @@ interface RecoveryDay {
   date: string;
   sleep_hours: number | null;
   water_oz: number | null;
+  mood: number | null;
 }
+
+// Same 1-5 scale and glyphs as the app's own Mood Check-In card (MoodCheckInCard in
+// app/(tabs)/index.tsx) — index 0 = mood value 1.
+export const MOOD_EMOJI = ["😞", "😕", "😐", "🙂", "😄"];
 
 const W = 800;
 const H = 220;
@@ -185,12 +190,21 @@ export function AdherenceChart({ days }: { days: AdherenceDay[] }) {
 // simpler than percentile scaling since neither metric tends to have the kind of single-day
 // outlier that calorie surplus does.
 export function RecoveryChart({ days }: { days: RecoveryDay[] }) {
-  const withData = days.filter((d) => d.sleep_hours != null || d.water_oz != null);
+  const withData = days.filter((d) => d.sleep_hours != null || d.water_oz != null || d.mood != null);
   if (withData.length < 2) return null;
 
   const minDate = days[0].date;
   const span = Math.max(1, daysBetween(minDate, days[days.length - 1].date));
   const xAt = (date: string) => PAD.left + (daysBetween(minDate, date) / span) * INNER_W;
+
+  // Mood doesn't share the water/sleep axes at all — it's a 1-5 scale represented purely as
+  // emoji, not a plotted numeric line, so it gets its own dedicated row (extra chart height)
+  // rather than competing for space on either existing y-axis.
+  const moodDays = days.filter((d) => d.mood != null);
+  const showMood = moodDays.length > 0;
+  const MOOD_ROW_H = 28;
+  const chartH = H + (showMood ? MOOD_ROW_H : 0);
+  const dateLabelY = showMood ? H - 6 + MOOD_ROW_H : H - 6;
 
   const waterDays = days.filter((d) => d.water_oz != null);
   const showWater = waterDays.length > 0;
@@ -226,7 +240,7 @@ export function RecoveryChart({ days }: { days: RecoveryDay[] }) {
   const labelPoints = [days[0], days[Math.floor((days.length - 1) / 2)], days[days.length - 1]];
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto">
+    <svg viewBox={`0 0 ${W} ${chartH}`} className="w-full h-auto">
       {[0, 0.5, 1].map((f) => {
         const y = PAD.top + (1 - f) * INNER_H;
         return <line key={f} x1={PAD.left} y1={y} x2={PAD.left + INNER_W} y2={y} stroke="#1e293b" strokeWidth={1} />;
@@ -253,8 +267,13 @@ export function RecoveryChart({ days }: { days: RecoveryDay[] }) {
       {showSleep && sleepDays.map((d, i) => (
         <circle key={`sc${i}`} cx={xAt(d.date)} cy={yAtSleep(d.sleep_hours as number)} r={2.5} fill="#38bdf8" />
       ))}
+      {showMood && moodDays.map((d, i) => (
+        <text key={`m${i}`} x={xAt(d.date)} y={H - 6} fontSize={16} textAnchor="middle">
+          {MOOD_EMOJI[(d.mood as number) - 1]}
+        </text>
+      ))}
       {labelPoints.map((d, i) => (
-        <text key={i} x={xAt(d.date)} y={H - 6} fontSize={10} fill="#64748b" textAnchor={i === 0 ? "start" : i === labelPoints.length - 1 ? "end" : "middle"}>
+        <text key={i} x={xAt(d.date)} y={dateLabelY} fontSize={10} fill="#64748b" textAnchor={i === 0 ? "start" : i === labelPoints.length - 1 ? "end" : "middle"}>
           {formatDate(d.date)}
         </text>
       ))}

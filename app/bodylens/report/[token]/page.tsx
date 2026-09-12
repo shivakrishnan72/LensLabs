@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { WeightBodyFatChart, AdherenceChart, RecoveryChart } from "./Charts";
+import { WeightBodyFatChart, AdherenceChart, RecoveryChart, MOOD_EMOJI } from "./Charts";
 
 export const metadata: Metadata = {
   title: "Progress Report",
@@ -23,7 +23,7 @@ interface AdherenceDay {
   date: string; cal_consumed: number | null; cal_burnt: number | null; deficit_surplus: number | null;
   protein: number | null; fiber: number | null; added_sugar: number | null;
 }
-interface RecoveryDay { date: string; sleep_hours: number | null; water_oz: number | null }
+interface RecoveryDay { date: string; sleep_hours: number | null; water_oz: number | null; mood: number | null }
 interface Targets { cal_target: number | null; protein_target: number | null }
 interface WorkoutEntry {
   date: string; activity_type: string; name: string | null;
@@ -82,6 +82,10 @@ function formatSleep(hours: number | null): string {
   const h = Math.floor(hours);
   const m = Math.round((hours - h) * 60);
   return m === 0 ? `${h}h` : `${h}h ${m}m`;
+}
+function formatMood(mood: number | null): string {
+  if (mood == null) return "—";
+  return MOOD_EMOJI[mood - 1] ?? "—";
 }
 
 interface FoodDayGroup {
@@ -222,6 +226,12 @@ export default async function CoachReportPage({ params }: { params: Promise<{ to
                 <span className="w-2 h-2 rounded-full bg-sky-400" />
                 <span className="text-xs text-slate-500">Sleep</span>
               </div>
+              {data.recovery.some((d) => d.mood != null) && (
+                <div className="flex items-center gap-2">
+                  <span className="text-xs">🙂</span>
+                  <span className="text-xs text-slate-500">Mood</span>
+                </div>
+              )}
             </div>
             <div className="overflow-x-auto mt-4">
               <table className="w-full text-sm">
@@ -229,7 +239,8 @@ export default async function CoachReportPage({ params }: { params: Promise<{ to
                   <tr className="text-left text-slate-500 text-xs">
                     <th className="pb-2 pr-4 font-medium">Date</th>
                     <th className="pb-2 pr-4 font-medium">Sleep</th>
-                    <th className="pb-2 font-medium">Water</th>
+                    <th className="pb-2 pr-4 font-medium">Water</th>
+                    <th className="pb-2 font-medium">Mood</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -237,7 +248,8 @@ export default async function CoachReportPage({ params }: { params: Promise<{ to
                     <tr key={d.date} className="border-t border-white/5">
                       <td className="py-2 pr-4 text-slate-300">{formatDate(d.date)}</td>
                       <td className="py-2 pr-4 text-slate-300">{formatSleep(d.sleep_hours)}</td>
-                      <td className="py-2 text-slate-300">{d.water_oz != null ? `${d.water_oz} oz` : "—"}</td>
+                      <td className="py-2 pr-4 text-slate-300">{d.water_oz != null ? `${d.water_oz} oz` : "—"}</td>
+                      <td className="py-2 text-slate-300 text-base">{formatMood(d.mood)}</td>
                     </tr>
                   ))}
                 </tbody>
