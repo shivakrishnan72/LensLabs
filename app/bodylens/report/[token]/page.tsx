@@ -23,7 +23,7 @@ interface AdherenceDay {
   date: string; cal_consumed: number | null; cal_burnt: number | null; deficit_surplus: number | null;
   protein: number | null; fiber: number | null; added_sugar: number | null;
 }
-interface RecoveryDay { date: string; sleep_hours: number | null; water_oz: number | null; mood: number | null }
+interface RecoveryDay { date: string; sleep_hours: number | null; water_oz: number | null; mood: number | null; alcohol_drinks: number }
 interface Targets { cal_target: number | null; protein_target: number | null }
 interface WorkoutEntry {
   date: string; activity_type: string; name: string | null;
@@ -86,6 +86,15 @@ function formatSleep(hours: number | null): string {
 function formatMood(mood: number | null): string {
   if (mood == null) return "—";
   return MOOD_EMOJI[mood - 1] ?? "—";
+}
+
+// Averages over days that actually have a value for that field — matches lib/insights.ts's
+// avg_protein/avg_fiber/avg_sugar convention on the mobile app (average across logged days, not
+// diluted by days with no data at all).
+function avgNonNull(days: { protein: number | null; fiber: number | null; added_sugar: number | null }[], field: "protein" | "fiber" | "added_sugar"): number | null {
+  const values = days.map((d) => d[field]).filter((v): v is number => v != null);
+  if (!values.length) return null;
+  return Math.round(values.reduce((s, v) => s + v, 0) / values.length);
 }
 
 interface FoodDayGroup {
@@ -177,8 +186,23 @@ export default async function CoachReportPage({ params }: { params: Promise<{ to
           <section className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6">
             <h2 className="text-sm font-semibold text-white mb-1">Calorie Adherence</h2>
             {data.targets?.cal_target != null && (
-              <p className="text-xs text-slate-500 mb-4">Target: {data.targets.cal_target} cal/day{data.targets.protein_target != null ? ` · ${data.targets.protein_target}g protein` : ""}</p>
+              <p className="text-xs text-slate-500 mb-1">Target: {data.targets.cal_target} cal/day{data.targets.protein_target != null ? ` · ${data.targets.protein_target}g protein` : ""}</p>
             )}
+            {(() => {
+              const avgProtein = avgNonNull(data.adherence, "protein");
+              const avgFiber = avgNonNull(data.adherence, "fiber");
+              const avgSugar = avgNonNull(data.adherence, "added_sugar");
+              if (avgProtein == null && avgFiber == null && avgSugar == null) return null;
+              return (
+                <p className="text-xs text-slate-500 mb-4">
+                  Averages: {[
+                    avgProtein != null && `${avgProtein}g protein`,
+                    avgFiber != null && `${avgFiber}g fiber`,
+                    avgSugar != null && `${avgSugar}g added sugar`,
+                  ].filter(Boolean).join(" · ")}
+                </p>
+              );
+            })()}
             <AdherenceChart days={data.adherence} />
             <div className="overflow-x-auto mt-4">
               <table className="w-full text-sm">
@@ -240,7 +264,8 @@ export default async function CoachReportPage({ params }: { params: Promise<{ to
                     <th className="pb-2 pr-4 font-medium">Date</th>
                     <th className="pb-2 pr-4 font-medium">Sleep</th>
                     <th className="pb-2 pr-4 font-medium">Water</th>
-                    <th className="pb-2 font-medium">Mood</th>
+                    <th className="pb-2 pr-4 font-medium">Mood</th>
+                    <th className="pb-2 font-medium">Drinks</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -249,7 +274,8 @@ export default async function CoachReportPage({ params }: { params: Promise<{ to
                       <td className="py-2 pr-4 text-slate-300">{formatDate(d.date)}</td>
                       <td className="py-2 pr-4 text-slate-300">{formatSleep(d.sleep_hours)}</td>
                       <td className="py-2 pr-4 text-slate-300">{d.water_oz != null ? `${d.water_oz} oz` : "—"}</td>
-                      <td className="py-2 text-slate-300 text-base">{formatMood(d.mood)}</td>
+                      <td className="py-2 pr-4 text-slate-300 text-base">{formatMood(d.mood)}</td>
+                      <td className="py-2 text-slate-300">{d.alcohol_drinks > 0 ? d.alcohol_drinks : "—"}</td>
                     </tr>
                   ))}
                 </tbody>
