@@ -50,9 +50,9 @@ export default function BodyLensPrivacyPage() {
 
             <h3 className="text-base font-medium text-slate-200 mt-5 mb-2">Data from integrations (optional)</h3>
             <ul className="list-disc pl-5 space-y-1 text-sm">
-              <li><strong>Apple Health (iOS):</strong> Steps, sleep, calorie burn, weight, body fat percentage, and workout data — only when you grant permission in Settings → Privacy &amp; Security → Health. Read from HealthKit; never written back without your action.</li>
-              <li><strong>Health Connect (Android):</strong> Steps, sleep, calorie burn, weight, body fat percentage, and workout data — only when you grant permission through the Health Connect app. Read-only; BodyLens never writes health data back to Health Connect.</li>
-              <li><strong>Strava:</strong> Activity name, type, duration, and distance from your connected Strava account. Requires explicit OAuth sign-in.</li>
+              <li><strong>Apple Health (iOS):</strong> Steps, sleep, calorie burn, weight, body fat percentage, heart rate (resting and during workouts), heart rate variability (HRV), and workout data — only when you grant permission in Settings → Privacy &amp; Security → Health. Read from HealthKit; never written back without your action.</li>
+              <li><strong>Health Connect (Android):</strong> Steps, sleep, calorie burn, weight, body fat percentage, heart rate (resting and during workouts), heart rate variability (HRV), and workout data — only when you grant permission through the Health Connect app. Read-only; BodyLens never writes health data back to Health Connect.</li>
+              <li><strong>Strava:</strong> Activity name, type, duration, distance, and average/max heart rate (when recorded) from your connected Strava account. Requires explicit OAuth sign-in.</li>
             </ul>
 
             <h3 className="text-base font-medium text-slate-200 mt-5 mb-2">Camera and barcode data</h3>
@@ -134,6 +134,16 @@ export default function BodyLensPrivacyPage() {
               <li><strong>Open Food Facts</strong> — barcode number sent when you scan a food product to retrieve nutritional data. No personal information is included.</li>
             </ul>
             <p className="text-sm mt-3">We do not share data with advertisers, data brokers, or analytics platforms.</p>
+
+            <h3 className="text-base font-medium text-slate-200 mt-5 mb-2">Share with a Coach (optional)</h3>
+            <p className="text-sm">
+              If you choose to, you can generate a read-only link to share your progress with a coach or dietitian. This is entirely opt-in — no link is created unless you create one yourself.
+            </p>
+            <ul className="list-disc pl-5 space-y-1 text-sm mt-2">
+              <li>You choose which categories to include: food diary, weight &amp; body fat, calorie adherence, recovery &amp; lifestyle (sleep, water, mood, resting heart rate, heart rate variability), your most recent AI insight, and/or workout log (including heart rate during workouts, when available).</li>
+              <li>The link shows a rolling last-30-days window that stays current, and requires no account or sign-in for the person viewing it.</li>
+              <li>The link expires automatically if it goes unviewed for a month, and you can revoke it at any time from Settings → Share with a Coach.</li>
+            </ul>
           </section>
 
           <section>
