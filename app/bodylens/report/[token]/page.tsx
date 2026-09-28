@@ -23,11 +23,12 @@ interface AdherenceDay {
   date: string; cal_consumed: number | null; cal_burnt: number | null; deficit_surplus: number | null;
   protein: number | null; fiber: number | null; added_sugar: number | null;
 }
-interface RecoveryDay { date: string; sleep_hours: number | null; water_oz: number | null; mood: number | null; alcohol_drinks: number }
+interface RecoveryDay { date: string; sleep_hours: number | null; water_oz: number | null; mood: number | null; alcohol_drinks: number; resting_hr: number | null; hrv: number | null }
 interface Targets { cal_target: number | null; protein_target: number | null }
 interface WorkoutEntry {
   date: string; activity_type: string; name: string | null;
   duration_secs: number | null; distance_m: number | null; source: string;
+  avg_hr: number | null; max_hr: number | null;
 }
 interface Insight { week_start: string; narrative: string; generated_at: string }
 
@@ -265,7 +266,9 @@ export default async function CoachReportPage({ params }: { params: Promise<{ to
                     <th className="pb-2 pr-4 font-medium">Sleep</th>
                     <th className="pb-2 pr-4 font-medium">Water</th>
                     <th className="pb-2 pr-4 font-medium">Mood</th>
-                    <th className="pb-2 font-medium">Drinks</th>
+                    <th className="pb-2 pr-4 font-medium">Drinks</th>
+                    <th className="pb-2 pr-4 font-medium">Resting HR</th>
+                    <th className="pb-2 font-medium">HRV</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -275,7 +278,9 @@ export default async function CoachReportPage({ params }: { params: Promise<{ to
                       <td className="py-2 pr-4 text-slate-300">{formatSleep(d.sleep_hours)}</td>
                       <td className="py-2 pr-4 text-slate-300">{d.water_oz != null ? `${d.water_oz} oz` : "—"}</td>
                       <td className="py-2 pr-4 text-slate-300 text-base">{formatMood(d.mood)}</td>
-                      <td className="py-2 text-slate-300">{d.alcohol_drinks > 0 ? d.alcohol_drinks : "—"}</td>
+                      <td className="py-2 pr-4 text-slate-300">{d.alcohol_drinks > 0 ? d.alcohol_drinks : "—"}</td>
+                      <td className="py-2 pr-4 text-slate-300">{d.resting_hr != null ? `${d.resting_hr} bpm` : "—"}</td>
+                      <td className="py-2 text-slate-300">{d.hrv != null ? `${d.hrv} ms` : "—"}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -334,7 +339,7 @@ export default async function CoachReportPage({ params }: { params: Promise<{ to
                     <span className="text-slate-500 text-xs ml-2">{formatDate(w.date)}</span>
                   </div>
                   <span className="text-slate-500 text-xs">
-                    {[formatDuration(w.duration_secs), formatDistance(w.distance_m)].filter(Boolean).join(" · ")}
+                    {[formatDuration(w.duration_secs), formatDistance(w.distance_m), w.avg_hr ? `${w.avg_hr} bpm avg` : null].filter(Boolean).join(" · ")}
                   </span>
                 </div>
               ))}

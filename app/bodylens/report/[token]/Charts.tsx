@@ -18,6 +18,8 @@ interface RecoveryDay {
   mood: number | null;
   // Table-only — not part of RecoveryChart below, unlike sleep/water/mood.
   alcohol_drinks: number;
+  resting_hr: number | null;
+  hrv: number | null;
 }
 
 // Same 1-5 scale and glyphs as the app's own Mood Check-In card (MoodCheckInCard in
